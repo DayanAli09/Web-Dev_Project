@@ -1,0 +1,171 @@
+/* RESET */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    color: #202124;
+}
+
+a {
+    color: #1a73e8;
+}
+
+/* TOP LINKS */
+.top-links {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    padding: 20px;
+}
+
+.top-links a {
+    text-decoration: none;
+    color: #202124;
+    font-size: 14px;
+}
+
+.top-links a:hover {
+    text-decoration: underline;
+}
+
+/* MAIN CENTER (index.html) */
+.main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 120px;
+}
+
+/* GOOGLE LOGO */
+.logo {
+    font-size: 70px;
+    font-weight: bold;
+    margin-bottom: 20px;
+    letter-spacing: 2px;
+}
+
+/* SEARCH BOX (shared across pages) */
+.search-box {
+    width: 500px;
+    max-width: 90vw;
+    padding: 12px 20px;
+    border-radius: 30px;
+    border: 1px solid #ddd;
+    outline: none;
+    font-size: 16px;
+}
+
+.search-box:hover,
+.search-box:focus {
+    box-shadow: 0 1px 6px rgba(32, 33, 36, 0.28);
+}
+
+/* BUTTONS (Google Search / I'm Feeling Lucky / Search Images) */
+.buttons {
+    margin-top: 25px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.buttons input {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 4px;
+    background: #f8f9fa;
+    color: #3c4043;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.buttons input:hover {
+    border: 1px solid #dadce0;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+/* IMAGE SEARCH PAGE */
+.center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 120px;
+}
+
+.center h1 {
+    margin-bottom: 30px;
+    font-weight: normal;
+    color: #5f6368;
+}
+
+.center form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* ADVANCED SEARCH PAGE */
+.advanced-container {
+    max-width: 500px;
+    margin: 80px auto;
+    padding: 0 20px;
+}
+
+.advanced-container h2 {
+    font-weight: normal;
+    border-bottom: 1px solid #ebebeb;
+    padding-bottom: 15px;
+    margin-bottom: 25px;
+}
+
+.advanced-container form {
+    display: flex;
+    flex-direction: column;
+}
+
+.field-group {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    margin-bottom: 15px;
+}
+
+.field-group label {
+    font-size: 13px;
+    margin-bottom: 5px;
+}
+
+.field-group input[type="text"] {
+    padding: 8px 10px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+    width: 100%;
+    font-size: 14px;
+}
+
+.blue-btn {
+    align-self: flex-start;
+    margin-top: 10px;
+    padding: 10px 25px;
+    background: #1a73e8;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.blue-btn:hover {
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+}
+
+footer {
+    text-align: center;
+    color: #999;
+    font-size: 12px;
+    margin-top: 60px;
+    padding: 20px;
+}

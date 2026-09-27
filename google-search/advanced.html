@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Advanced Search</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="top-links">
+        <a href="index.html">Google Search</a>
+    </div>
+
+    <div class="advanced-container">
+        <h2>Advanced Search</h2>
+
+        <form action="https://www.google.com/search">
+            <div class="field-group">
+                <label for="all-words">Find pages with... all these words:</label>
+                <input type="text" id="all-words" name="q">
+            </div>
+
+            <div class="field-group">
+                <label for="exact-phrase">this exact word or phrase:</label>
+                <input type="text" id="exact-phrase" name="as_epq">
+            </div>
+
+            <div class="field-group">
+                <label for="any-words">any of these words:</label>
+                <input type="text" id="any-words" name="as_oq">
+            </div>
+
+            <div class="field-group">
+                <label for="none-words">none of these words:</label>
+                <input type="text" id="none-words" name="as_eq">
+            </div>
+
+            <input type="submit" value="Advanced Search" class="blue-btn">
+        </form>
+    </div>
+
+    <footer>
+        <p>Made by Dayan Ali</p>
+    </footer>
+</body>
+</html>

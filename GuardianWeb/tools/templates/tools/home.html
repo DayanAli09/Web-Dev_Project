@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Tools</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            color: #202124;
+        }
+
+        .main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 120px;
+            padding: 0 20px;
+        }
+
+        h1 {
+            font-weight: normal;
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 14px;
+            color: #5f6368;
+            margin-bottom: 40px;
+        }
+
+        .tool-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            width: 320px;
+            max-width: 90vw;
+        }
+
+        .tool-link {
+            display: block;
+            text-decoration: none;
+            color: #3c4043;
+            background: #f8f9fa;
+            border: 1px solid #dadce0;
+            border-radius: 30px;
+            padding: 12px 24px;
+            text-align: center;
+            font-size: 15px;
+        }
+
+        .tool-link:hover {
+            box-shadow: 0 1px 6px rgba(32, 33, 36, 0.2);
+            border-color: rgba(223, 225, 229, 0);
+        }
+    </style>
+</head>
+<body>
+    <div class="main">
+        <h1>Cyber Security Tools</h1>
+        <p class="subtitle">Pick a tool to get started</p>
+
+        <div class="tool-list">
+            <a href="/phishing/" class="tool-link">Phishing URL Checker</a>
+            <a href="/encrypt/" class="tool-link">File Encryptor</a>
+            <a href="/scan/" class="tool-link">Port Scanner</a>
+        </div>
+    </div>
+</body>
+</html>

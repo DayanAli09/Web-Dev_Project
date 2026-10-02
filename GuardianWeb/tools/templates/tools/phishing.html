@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Phishing Detector</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            color: #202124;
+        }
+
+        .top-links {
+            display: flex;
+            justify-content: flex-end;
+            padding: 20px;
+        }
+
+        .top-links a {
+            text-decoration: none;
+            color: #202124;
+            font-size: 14px;
+        }
+
+        .top-links a:hover {
+            text-decoration: underline;
+        }
+
+        .main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 80px;
+            padding: 0 20px;
+        }
+
+        h1 {
+            font-weight: normal;
+            font-size: 28px;
+            color: #202124;
+            margin-bottom: 30px;
+        }
+
+        .search-box {
+            width: 500px;
+            max-width: 90vw;
+            padding: 12px 20px;
+            border-radius: 30px;
+            border: 1px solid #ddd;
+            outline: none;
+            font-size: 16px;
+        }
+
+        .search-box:focus {
+            box-shadow: 0 1px 6px rgba(32, 33, 36, 0.28);
+        }
+
+        .buttons {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .buttons button {
+            padding: 10px 24px;
+            border: none;
+            border-radius: 4px;
+            background: #f8f9fa;
+            color: #3c4043;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .buttons button:hover {
+            border: 1px solid #dadce0;
+            box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Results */
+        .result {
+            width: 500px;
+            max-width: 90vw;
+            margin-top: 40px;
+            border-top: 1px solid #ebebeb;
+            padding-top: 20px;
+        }
+
+        .result-url {
+            font-size: 14px;
+            color: #5f6368;
+            word-break: break-all;
+            margin-bottom: 10px;
+        }
+
+        .score-row {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            margin-bottom: 6px;
+        }
+
+        .score-number {
+            font-size: 32px;
+            font-weight: bold;
+        }
+
+        .score-max {
+            font-size: 14px;
+            color: #5f6368;
+        }
+
+        .verdict {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .verdict.high {
+            background: #fce8e6;
+            color: #c5221f;
+        }
+
+        .verdict.medium {
+            background: #fef7e0;
+            color: #b06000;
+        }
+
+        .verdict.low {
+            background: #e6f4ea;
+            color: #137333;
+        }
+
+        .reasons {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .reasons li {
+            font-size: 14px;
+            color: #3c4043;
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f3f4;
+        }
+
+        .reasons li:last-child {
+            border-bottom: none;
+        }
+
+        .no-reasons {
+            font-size: 14px;
+            color: #5f6368;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-links">
+        <a href="/">Home</a>
+    </div>
+
+    <div class="main">
+        <h1>Phishing URL Checker</h1>
+
+        <form method="POST">
+            {% csrf_token %}
+            <input
+                type="text"
+                name="url"
+                class="search-box"
+                placeholder="Enter a URL to check"
+                required
+                {% if result %}value="{{ result.url }}"{% endif %}
+            >
+            <div class="buttons">
+                <button type="submit">Check URL</button>
+            </div>
+        </form>
+
+        {% if result %}
+        <div class="result">
+            <div class="result-url">{{ result.url }}</div>
+
+            <div class="score-row">
+                <span class="score-number">{{ result.score }}</span>
+                <span class="score-max">/ 100</span>
+            </div>
+
+            {% if result.score >= 60 %}
+                <span class="verdict high">HIGH RISK</span>
+            {% elif result.score >= 30 %}
+                <span class="verdict medium">MEDIUM RISK</span>
+            {% else %}
+                <span class="verdict low">LOW RISK</span>
+            {% endif %}
+
+            {% if result.reasons %}
+                <ul class="reasons">
+                    {% for reason in result.reasons %}
+                        <li>{{ reason }}</li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p class="no-reasons">No suspicious signals found.</p>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>

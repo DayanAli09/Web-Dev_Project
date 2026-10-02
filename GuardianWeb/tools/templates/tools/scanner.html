@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Port Scanner</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            color: #202124;
+        }
+
+        .top-links {
+            display: flex;
+            justify-content: flex-end;
+            padding: 20px;
+        }
+
+        .top-links a {
+            text-decoration: none;
+            color: #202124;
+            font-size: 14px;
+        }
+
+        .top-links a:hover {
+            text-decoration: underline;
+        }
+
+        .main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 60px;
+            padding: 0 20px;
+        }
+
+        h1 {
+            font-weight: normal;
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            font-size: 13px;
+            color: #5f6368;
+            margin-bottom: 30px;
+            text-align: center;
+            max-width: 400px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 320px;
+            max-width: 90vw;
+        }
+
+        .field {
+            width: 100%;
+            margin-bottom: 14px;
+        }
+
+        .field label {
+            display: block;
+            font-size: 13px;
+            color: #5f6368;
+            margin-bottom: 6px;
+        }
+
+        .port-row {
+            display: flex;
+            gap: 10px;
+        }
+
+        input[type="text"],
+        input[type="number"] {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        input:focus {
+            outline: none;
+            box-shadow: 0 1px 6px rgba(32, 33, 36, 0.2);
+        }
+
+        button {
+            margin-top: 8px;
+            padding: 10px 24px;
+            border: none;
+            border-radius: 4px;
+            background: #1a73e8;
+            color: white;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .error {
+            margin-top: 16px;
+            color: #c5221f;
+            font-size: 14px;
+        }
+
+        /* Results */
+        .results {
+            width: 400px;
+            max-width: 90vw;
+            margin-top: 30px;
+            display: none;
+        }
+
+        .status-line {
+            font-size: 14px;
+            color: #5f6368;
+            margin-bottom: 10px;
+        }
+
+        .progress-track {
+            width: 100%;
+            height: 8px;
+            background: #f1f3f4;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 16px;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #1a73e8;
+            width: 0%;
+            transition: width 0.2s ease;
+        }
+
+        .open-ports {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .open-ports li {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            padding: 8px 0;
+            border-bottom: 1px solid #f1f3f4;
+        }
+
+        .open-ports .service {
+            color: #5f6368;
+        }
+
+        .no-ports {
+            font-size: 14px;
+            color: #5f6368;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-links">
+        <a href="/">Home</a>
+    </div>
+
+    <div class="main">
+        <h1>Port Scanner</h1>
+        <p class="subtitle">Only scan devices/networks you own or have permission to test.</p>
+
+        <form id="scan-form">
+            <div class="field">
+                <label for="host">Host</label>
+                <input type="text" id="host" name="host" placeholder="127.0.0.1" required>
+            </div>
+
+            <div class="field port-row">
+                <div>
+                    <label for="start">Start port</label>
+                    <input type="number" id="start" name="start" value="1" min="1" max="65535">
+                </div>
+                <div>
+                    <label for="end">End port</label>
+                    <input type="number" id="end" name="end" value="1024" min="1" max="65535">
+                </div>
+            </div>
+
+            <button type="submit" id="scan-button">Start Scan</button>
+        </form>
+
+        <p class="error" id="error-message"></p>
+
+        <div class="results" id="results">
+            <p class="status-line" id="status-line">Scanning...</p>
+            <div class="progress-track">
+                <div class="progress-fill" id="progress-fill"></div>
+            </div>
+            <ul class="open-ports" id="open-ports"></ul>
+        </div>
+    </div>
+
+    <script>
+        function getCsrfToken() {
+            return document.querySelector('[name=csrfmiddlewaretoken]').value;
+        }
+
+        const form = document.getElementById('scan-form');
+        const scanButton = document.getElementById('scan-button');
+        const errorMessage = document.getElementById('error-message');
+        const results = document.getElementById('results');
+        const statusLine = document.getElementById('status-line');
+        const progressFill = document.getElementById('progress-fill');
+        const openPortsList = document.getElementById('open-ports');
+
+        let pollTimer = null;
+
+        form.addEventListener('submit', async function (e) {
+            e.preventDefault();
+            errorMessage.textContent = '';
+            openPortsList.innerHTML = '';
+            results.style.display = 'none';
+            scanButton.disabled = true;
+            scanButton.textContent = 'Scanning...';
+
+            const formData = new FormData(form);
+
+            try {
+                const response = await fetch('/scan/start/', {
+                    method: 'POST',
+                    headers: { 'X-CSRFToken': getCsrfToken() },
+                    body: formData,
+                });
+                const data = await response.json();
+
+                if (!response.ok) {
+                    errorMessage.textContent = data.error || 'Something went wrong.';
+                    scanButton.disabled = false;
+                    scanButton.textContent = 'Start Scan';
+                    return;
+                }
+
+                results.style.display = 'block';
+                pollStatus(data.scan_id);
+            } catch (err) {
+                errorMessage.textContent = 'Could not reach the server.';
+                scanButton.disabled = false;
+                scanButton.textContent = 'Start Scan';
+            }
+        });
+
+        function pollStatus(scanId) {
+            pollTimer = setInterval(async function () {
+                const response = await fetch(`/scan/status/${scanId}/`);
+                const data = await response.json();
+
+                progressFill.style.width = data.progress + '%';
+                statusLine.textContent =
+                    `Scanned ${data.scanned} / ${data.total} ports — ${data.open_ports.length} open`;
+
+                openPortsList.innerHTML = '';
+                if (data.open_ports.length === 0) {
+                    const li = document.createElement('li');
+                    li.className = 'no-ports';
+                    li.textContent = data.status === 'done' ? 'No open ports found.' : 'Scanning...';
+                    openPortsList.appendChild(li);
+                } else {
+                    data.open_ports.forEach(function (p) {
+                        const li = document.createElement('li');
+                        li.innerHTML = `<span>Port ${p.port}</span><span class="service">${p.service}</span>`;
+                        openPortsList.appendChild(li);
+                    });
+                }
+
+                if (data.status === 'done') {
+                    clearInterval(pollTimer);
+                    statusLine.textContent = `Done — ${data.open_ports.length} open port(s) found on ${data.host}`;
+                    scanButton.disabled = false;
+                    scanButton.textContent = 'Start Scan';
+                }
+            }, 1000);
+        }
+    </script>
+
+    {% csrf_token %}
+</body>
+</html>

@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Encryptor</title>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            color: #202124;
+        }
+
+        .top-links {
+            display: flex;
+            justify-content: flex-end;
+            padding: 20px;
+        }
+
+        .top-links a {
+            text-decoration: none;
+            color: #202124;
+            font-size: 14px;
+        }
+
+        .top-links a:hover {
+            text-decoration: underline;
+        }
+
+        .main {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-top: 80px;
+            padding: 0 20px;
+        }
+
+        h1 {
+            font-weight: normal;
+            font-size: 28px;
+            margin-bottom: 30px;
+        }
+
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 320px;
+            max-width: 90vw;
+        }
+
+        .field {
+            width: 100%;
+            margin-bottom: 16px;
+        }
+
+        .field label {
+            display: block;
+            font-size: 13px;
+            color: #5f6368;
+            margin-bottom: 6px;
+        }
+
+        input[type="file"],
+        input[type="password"] {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 14px;
+        }
+
+        input[type="password"]:focus {
+            outline: none;
+            box-shadow: 0 1px 6px rgba(32, 33, 36, 0.2);
+        }
+
+        .buttons {
+            margin-top: 10px;
+            display: flex;
+            gap: 10px;
+        }
+
+        .buttons button {
+            padding: 10px 22px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .btn-encrypt {
+            background: #1a73e8;
+            color: white;
+        }
+
+        .btn-decrypt {
+            background: #f8f9fa;
+            color: #3c4043;
+            border: 1px solid #dadce0;
+        }
+
+        .btn-encrypt:hover,
+        .btn-decrypt:hover {
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        .error {
+            margin-top: 20px;
+            color: #c5221f;
+            font-size: 14px;
+            text-align: center;
+        }
+
+        .note {
+            margin-top: 30px;
+            font-size: 12px;
+            color: #5f6368;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="top-links">
+        <a href="/">Home</a>
+    </div>
+
+    <div class="main">
+        <h1>File Encryptor</h1>
+
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+
+            <div class="field">
+                <label for="file">File</label>
+                <input type="file" id="file" name="file" required>
+            </div>
+
+            <div class="field">
+                <label for="password">Password</label>
+                <input type="password" id="password" name="password" required>
+            </div>
+
+            <div class="buttons">
+                <button type="submit" name="action" value="encrypt" class="btn-encrypt">Encrypt</button>
+                <button type="submit" name="action" value="decrypt" class="btn-decrypt">Decrypt</button>
+            </div>
+        </form>
+
+        {% if error %}
+            <p class="error">{{ error }}</p>
+        {% endif %}
+
+        <p class="note">Files are processed in memory and never saved on the server.</p>
+    </div>
+</body>
+</html>

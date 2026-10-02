@@ -1,0 +1,4 @@
+Django>=6.1
+requests>=2.33
+beautifulsoup4>=4.14
+cryptography>=46.0
